@@ -30,6 +30,24 @@ const CONFIG = {
     TPcss (path) {
       return path.replace('.pcss', '.wxss')
     }
+  },
+
+  bd: {
+    TWxs (path) {
+      return path.replace('.wxs', '.js')
+    },
+
+    TWxss (path) {
+      return path.replace('.wxss', '.css')
+    },
+
+    TScss (path) {
+      return path.replace('.scss', '.css')
+    },
+
+    TWxml (path) {
+      return path.replace('.wxml', '.swan')
+    },
   }
 }
 

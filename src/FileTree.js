@@ -17,7 +17,6 @@ let regRules = {
   '.scss$': meta => set(meta, 'isScss', true),
   '.pcss$': meta => set(meta, 'isPcss', true),
   '.less$': meta => set(meta, 'isLess', true)
-  // '.less$': meta => set(meta, 'isLess', true),
 }
 
 function getFileMeta (file) {

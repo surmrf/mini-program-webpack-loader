@@ -8,6 +8,7 @@ const {
 const utils = require('./utils')
 const AliPluginHelper = require('./ali/plugin')
 const WxPluginHelper = require('./wx/plugin')
+const BdPluginHelper = require('./bd/plugin')
 const FileTree = require('./FileTree')
 const { ProgressPlugin } = require('webpack')
 const loader = require('./loader')
@@ -59,7 +60,7 @@ module.exports = class MiniProgam {
 
     process.env.TARGET = this.options.target || 'wx'
 
-    this.helperPlugin = this.options.target === 'ali' ? new AliPluginHelper(this) : new WxPluginHelper(this)
+    this.helperPlugin = this.getHelperPlugin()
   }
 
   apply (compiler) {
@@ -87,6 +88,16 @@ module.exports = class MiniProgam {
     utils.setDistParams(this.compilerContext, this.miniEntrys, this.options.resources, this.outputPath)
   }
 
+  getHelperPlugin() {
+    const helper = {
+      ali: AliPluginHelper,
+      bd: BdPluginHelper,
+      wx: WxPluginHelper
+    }[this.options.target];
+
+    return helper ? new helper(this) : {};
+  }
+
   getGlobalComponents () {
     return this.appJsonCode.usingComponents || {}
   }
@@ -101,9 +112,9 @@ module.exports = class MiniProgam {
     return new ConcatSource(JSON.stringify(ext, null, 2))
   }
 
-  getAppWxss (compilation) {
-    let ext = '.wxss'
+  getAppStyle (compilation) {
     let entryNames = [...new Set(this.entryNames)]
+    let ext = ''
     let wxssCode = ''
 
     if (this.options.target === 'ali') {
@@ -112,6 +123,10 @@ module.exports = class MiniProgam {
         /* polyfill */
         ${readFileSync(join(__dirname, './ali/lib/base.acss'), 'utf8')}
       `
+    } else if (this.options.target === 'bd') {
+      ext = '.css'
+    } else if (this.options.target === 'wx') {
+      ext = '.wxss'
     }
 
     entryNames.forEach((name) => {
@@ -121,6 +136,7 @@ module.exports = class MiniProgam {
         wxssCode += code.source().toString()
       }
     })
+
     return new RawSource(wxssCode)
   }
 
@@ -136,7 +152,7 @@ module.exports = class MiniProgam {
 
     entryNames = entryNames.map((name) => {
       if (name === 'app') return []
-      return ['.json', '.wxss', '.js'].map(ext => name + ext)
+      return ['.json', '.scss', '.js'].map(ext => name + ext)
     })
 
     entryNames = flattenDeep(entryNames)
@@ -223,7 +239,7 @@ module.exports = class MiniProgam {
       /**
        * 入口文件只打包对应的 wxss 文件
        */
-      let entryFiles = getFiles(itemContext, fileName, ['.wxss'])
+      let entryFiles = getFiles(itemContext, fileName, ['.scss'])
 
       /**
        * 添加所有与这个 json 文件相关的 page 文件和 app 文件到编译中

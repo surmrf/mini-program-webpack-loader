@@ -113,7 +113,7 @@ class MiniPlugin extends MiniProgam {
 
       const ignoreFiles = utils.flattenDeep([
         ignoreEntrys,
-        entryNames.map(name => ['.wxss', '.js', '.json'].map(ext => `${name}${ext}`))
+        entryNames.map(name => ['.scss', '.js', '.json'].map(ext => `${name}${ext}`))
       ])
 
       assetsKey.forEach(key => {
@@ -196,9 +196,9 @@ class MiniPlugin extends MiniProgam {
       assets['app.js'] = this.helperPlugin.getAppJsCode(assets[this.mainName + '.js'])
 
       /**
-       * 合并 .wxss 代码到 app.wxss
+       * 合并 .scss 代码到 app.css
        */
-      assets['app.wxss'] = this.getAppWxss(compilation)
+      assets['app.css'] = this.getAppStyle(compilation)
     } else {
       assets['plugin.json'] = this.helperPlugin.getPluginJsonCode()
     }
@@ -237,8 +237,16 @@ class MiniPlugin extends MiniProgam {
     }
 
     if (this.options.target === 'ali') {
-      assets['app.acss'] = assets['app.wxss']
-      delete assets['app.wxss']
+      // 阿里
+      assets['app.acss'] = assets['app.css']
+      delete assets['app.css']
+    } else if (this.options.target === 'bd') {
+      // 百度
+      assets['app.css'] = assets['app.css']
+    } else if (this.options.target === 'wx') {
+      // 微信
+      assets['app.wxss'] = assets['app.css']
+      delete assets['app.css']
     }
 
     this.helperPlugin.emitHook(compilation, callback)

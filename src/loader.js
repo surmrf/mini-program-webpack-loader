@@ -4,6 +4,7 @@ const utils = require('./utils')
 const FileTree = require('./FileTree')
 const WXLoaderHelper = require('./wx/loader')
 const AliLoaderHelper = require('./ali/loader')
+const BdLoaderHelper = require('./bd/loader')
 const { toTargetPath } = require('./helpers/path')
 const { resolveFilesForLoader } = require('./helpers/component')
 const { reslovePagesFiles } = require('./helpers/page')
@@ -24,15 +25,23 @@ class MiniLoader {
     // 获取文件信息
     this.fileMeta = tree.getFile(loader.resourcePath)
 
-    this.targetHelper = this.$plugin.options.target === 'ali'
-      ? new AliLoaderHelper(loader.resourcePath, this.$plugin)
-      : new WXLoaderHelper(loader.resourcePath)
+    this.targetHelper = this.getTargetHelper()
 
     this.resolve = (context, request) => new Promise((resolve, reject) => {
       loader.resolve(context, request, (err, result) => err ? reject(err) : resolve(result))
     })
 
     this.parser()
+  }
+
+  getTargetHelper() {
+    const helper = {
+      ali: AliLoaderHelper,
+      bd: BdLoaderHelper,
+      wx: WXLoaderHelper
+    }[this.$plugin.options.target]
+
+    return helper ? new helper(this.loader.resourcePath, this.$plugin) : {};
   }
 
   parser () {
@@ -156,9 +165,9 @@ class MiniLoader {
       /**
        * 看看是不是需要对 wxml 文件进行处理，目前 支付宝小程序 需要处理
        */
-      code = this.fileMeta.isWxml && this.targetHelper.transformWxml
-        ? this.targetHelper.transformWxml(code)
-        : code
+      if (this.fileMeta.isWxml && this.targetHelper.transformWxml) {
+        code = this.targetHelper.transformWxml(code)
+      }
 
       return Promise.all(promises).then(() => code)
     })
