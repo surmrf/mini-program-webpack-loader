@@ -1,7 +1,6 @@
 require('console.table')
 require('colors')
 const fs = require('fs')
-const readline = require('readline')
 const { dirname, join } = require('path')
 const { ConcatSource } = require('webpack-sources')
 const { util: { createHash } } = require('webpack')
@@ -9,7 +8,6 @@ const utils = require('./utils')
 const MiniProgam = require('./MiniProgram')
 const { get: getAppJson } = require('./helpers/app')
 const { pathsInSameFolder, moduleOnlyUsedBySubPackage, pathsInSamePackage } = require('./helpers/module')
-const stdout = process.stdout
 
 const DEPS_MAP = {}
 const COMPONENT_DEPS_MAP = {}
@@ -284,20 +282,6 @@ class MiniPlugin extends MiniProgam {
    */
   newFilesEntryFromLoader (files) {
     this._appending = this._appending.concat(files)
-  }
-
-  /**
-   * 输出打包进度
-   * @param {String} progress 进度
-   * @param {String} event
-   * @param {*} modules
-   */
-  progress (progress, event, modules) {
-    readline.clearLine(process.stdout)
-    readline.cursorTo(process.stdout, 0)
-
-    if (+progress === 1) return
-    stdout.write(`${'正在打包: '.gray} ${`${(progress * 100).toFixed(2)}%`.green} ${event || ''} ${modules || ''}`)
   }
 
   /**

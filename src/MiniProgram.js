@@ -5,6 +5,7 @@ const {
   extname,
   basename
 } = require('path')
+const readline = require('readline')
 const utils = require('./utils')
 const AliPluginHelper = require('./ali/plugin')
 const WxPluginHelper = require('./wx/plugin')
@@ -44,6 +45,8 @@ const defaultOptions = {
 
 const mainChunkNameTemplate = '__assets_chunk_name__'
 let mainChunkNameIndex = 0
+
+const stdout = process.stdout
 
 module.exports = class MiniProgam {
   constructor (options) {
@@ -88,6 +91,20 @@ module.exports = class MiniProgam {
     utils.setDistParams(this.compilerContext, this.miniEntrys, this.options.resources, this.outputPath)
   }
 
+  /**
+   * 输出打包进度
+   * @param {String} progress 进度
+   * @param {String} event
+   * @param {*} modules
+   */
+  progress (progress, event, modules) {
+    readline.clearLine(process.stdout)
+    readline.cursorTo(process.stdout, 0)
+
+    if (+progress === 1) return
+    stdout.write(`${'正在打包: '.gray} ${`${(progress * 100).toFixed(2)}%`.green} ${event || ''} ${modules || ''}`)
+  }
+
   getHelperPlugin() {
     const helper = {
       ali: AliPluginHelper,
@@ -96,10 +113,6 @@ module.exports = class MiniProgam {
     }[this.options.target];
 
     return helper ? new helper(this) : {};
-  }
-
-  getGlobalComponents () {
-    return this.appJsonCode.usingComponents || {}
   }
 
   getExtJson () {
