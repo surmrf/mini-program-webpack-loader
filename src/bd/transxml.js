@@ -9,7 +9,7 @@ module.exports = async function (compilation, plugin) {
   assetkeys.forEach(key => {
     let { source } = tree.getFileByDist(key)
     if (tree.wxmls.indexOf(source) > -1) {
-      new Xml(compilation, source, 'wx').formatComponent()
+      new Xml(compilation, source, 'bd').formatComponent()
     }
   })
 }

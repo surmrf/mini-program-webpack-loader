@@ -11,22 +11,22 @@ module.exports = class BdPluginHelper {
   }
 
   apply (compiler) {
-    // new webpack.DefinePlugin({
-    //   wx: 'swan',
-    //   App: '_afAppx.App',
-    //   Page: 'global.Page',
-    //   getApp: `
-    //   (function () {
-    //     const app = _afAppx.getApp() || {}
-    //     global.globalData = app.globalData = Object.assign({}, app.globalData, global.globalData)
-    //     Object.assign(app, global)
-    //     return Object.assign(global, app)
-    //   })
-    //   `,
-    //   __wxConfig: JSON.stringify(null),
-    //   Component: `global.Component`,
-    //   Behavior: '(function (args) { return args })'
-    // }).apply(compiler)
+    new webpack.DefinePlugin({
+      wx: 'swan'
+      // App: '_afAppx.App',
+      // Page: 'global.Page',
+      // getApp: `
+      // (function () {
+      //   const app = _afAppx.getApp() || {}
+      //   global.globalData = app.globalData = Object.assign({}, app.globalData, global.globalData)
+      //   Object.assign(app, global)
+      //   return Object.assign(global, app)
+      // })
+      // `,
+      // __wxConfig: JSON.stringify(null),
+      // Component: `global.Component`,
+      // Behavior: '(function (args) { return args })'
+    }).apply(compiler)
   }
 
   setCompilation (compilation) {
@@ -58,52 +58,11 @@ module.exports = class BdPluginHelper {
   }
 
   getAppJsonCode () {
-    const app = getAppJson()
-    const {
-      subPackages,
-      tabBar,
-      pages: originPages
-    } = JSON.parse(JSON.stringify(app))
-
-    subPackages.forEach(({ root, pages }) => {
-      pages.forEach(page => {
-        originPages.push(path.join(root, page))
-      })
-    })
-
-    tabBar.textColor = tabBar.color
-    tabBar.items = tabBar.list.map(item => {
-      item.name = item.text
-      item.icon = item.iconPath
-      item.activeIcon = item.selectedIconPath
-      delete item.text
-      delete item.iconPath
-      delete item.selectedIconPath
-
-      return item
-    })
-
-    delete tabBar.list
-
-    return new ConcatSource(JSON.stringify(app, null, 2))
+    return new ConcatSource(JSON.stringify(getAppJson(), null, 2))
   }
 
   getAppJsCode (content) {
-    // const libCode = fs.readFileSync(this.$plugin.options.wxLib, 'utf8')
-
-    return new ConcatSource(
-      `require('${
-        path.relative(this.$plugin.outputPath, path.resolve(__dirname, './lib/my.js'))
-      }');\n`,
-      `require('./mixin.js');\n`,
-      `require('${
-        path.relative(this.$plugin.outputPath, path.resolve(__dirname, './lib/component.js'))
-      }');\n`,
-      `require('${
-        path.relative(this.$plugin.outputPath, path.resolve(__dirname, './lib/page.js'))
-      }');\n`,
-      content
-    )
+    return content;
   }
 
   emitHook (compilation, callback) {

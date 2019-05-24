@@ -9,25 +9,6 @@ module.exports = class BdLoaderHelper {
   }
 
   transformWxml (content) {
-    // let start;
-    // let code = content;
-
-    // wx:for="{{ list }}" => s-for="list"
-    // while(code) {
-    //   start = code.indexOf('wx:for')
-
-    //   if (start > -1) {
-    //     code = code.slice(start + 6)
-    //     start = code.indexOf('{{')
-    //   }
-
-    //   start = code.indexOf('{{')
-
-    //   if (start > -1) {
-
-    //   }
-    // }
-
     // 更换指令前缀
     content = content.replace(/wx:/g, 's-')
 

@@ -5,7 +5,9 @@ const utils = require('../utils')
 const { getAssetContent } = require('./compilation')
 
 let tree = new FileTree()
-const wxNativeTags = ['view', 'scroll-view', 'swiper', 'movable-view', 'movable-aera', 'cover-view', 'cover-image', 'icon', 'text', 'rich-text', 'progress', 'button', 'checkbox', 'checkbox-group', 'form', 'input', 'label', 'picker', 'picker-view', 'picker-view-column', 'swiper-item', 'radio', 'slider', 'switch', 'textarea', 'navigator', 'functional-page-navigator', 'audio', 'image', 'video', 'camera', 'live-player', 'live-pusher', 'map', 'canvas', 'open-data', 'web-view', 'ad', 'official-account', 'template', 'wxs', 'import', 'include', 'block', 'slot']
+const nativeTags = ['view', 'scroll-view', 'swiper', 'movable-area', 'movable-view', 'movable-aera', 'cover-view', 'cover-image', 'icon', 'text', 'rich-text', 'progress', 'button', 'checkbox', 'checkbox-group', 'form', 'input', 'label', 'picker', 'picker-view', 'picker-view-column', 'swiper-item', 'radio-group', 'radio', 'slider', 'switch', 'textarea', 'navigator', 'functional-page-navigator', 'audio', 'image', 'video', 'camera', 'live-player', 'live-pusher', 'map', 'canvas', 'open-data', 'web-view', 'ad', 'official-account', 'template', 'wxs', 'import', 'include', 'block', 'slot']
+const bdNativeTags = ['filter'];
+const wxNativeTags = ['wxs'];
 
 module.exports = class Xml {
   constructor (compilation, request, platform) {
@@ -103,7 +105,17 @@ module.exports = class Xml {
   }
 
   hasUsingComponent (tag) {
-    return wxNativeTags.indexOf(tag) === -1
+    let tags = nativeTags;
+
+    if (this.platform === 'ali') {
+      //
+    } else if (this.platform === 'bd') {
+      tags = tags.concat(bdNativeTags);
+    } else if (this.platform === 'wx') {
+      tags = tags.concat(wxNativeTags);
+    }
+
+    return tags.indexOf(tag) === -1
   }
 
   writeToComponent (tags) {
