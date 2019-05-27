@@ -125,33 +125,33 @@ module.exports = class MiniProgam {
     return new ConcatSource(JSON.stringify(ext, null, 2))
   }
 
-  getAppStyle (compilation) {
-    let entryNames = [...new Set(this.entryNames)]
-    let ext = ''
-    let wxssCode = ''
+  // getAppStyle (compilation) {
+  //   let entryNames = [...new Set(this.entryNames)]
+  //   let ext = ''
+  //   let wxssCode = ''
 
-    if (this.options.target === 'ali') {
-      ext = '.acss'
-      wxssCode += `
-        /* polyfill */
-        ${readFileSync(join(__dirname, './ali/lib/base.acss'), 'utf8')}
-      `
-    } else if (this.options.target === 'bd') {
-      ext = '.css'
-    } else if (this.options.target === 'wx') {
-      ext = '.wxss'
-    }
+  //   if (this.options.target === 'ali') {
+  //     ext = '.acss'
+  //     wxssCode += `
+  //       /* polyfill */
+  //       ${readFileSync(join(__dirname, './ali/lib/base.acss'), 'utf8')}
+  //     `
+  //   } else if (this.options.target === 'bd') {
+  //     ext = '.css'
+  //   } else if (this.options.target === 'wx') {
+  //     ext = '.wxss'
+  //   }
 
-    entryNames.forEach((name) => {
-      let code = compilation.assets[name + ext]
-      if (code) {
-        wxssCode += `/************ ${name + ext} *************/\n`
-        wxssCode += code.source().toString()
-      }
-    })
+  //   entryNames.forEach((name) => {
+  //     let code = compilation.assets[name + ext]
+  //     if (code) {
+  //       wxssCode += `/************ ${name + ext} *************/\n`
+  //       wxssCode += code.source().toString()
+  //     }
+  //   })
 
-    return new RawSource(wxssCode)
-  }
+  //   return new RawSource(wxssCode)
+  // }
 
   getIgnoreEntrys () {
     /**

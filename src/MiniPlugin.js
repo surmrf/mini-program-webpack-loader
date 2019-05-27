@@ -196,7 +196,7 @@ class MiniPlugin extends MiniProgam {
       /**
        * 合并 .scss 代码到 app.css
        */
-      assets['app.css'] = this.getAppStyle(compilation)
+      // assets['app.css'] = this.getAppStyle(compilation)
     } else {
       assets['plugin.json'] = this.helperPlugin.getPluginJsonCode()
     }
@@ -234,18 +234,18 @@ class MiniPlugin extends MiniProgam {
       }
     }
 
-    if (this.options.target === 'ali') {
-      // 阿里
-      assets['app.acss'] = assets['app.css']
-      delete assets['app.css']
-    } else if (this.options.target === 'bd') {
-      // 百度
-      assets['app.css'] = assets['app.css']
-    } else if (this.options.target === 'wx') {
-      // 微信
-      assets['app.wxss'] = assets['app.css']
-      delete assets['app.css']
-    }
+    // if (this.options.target === 'ali') {
+    //   // 阿里
+    //   assets['app.acss'] = assets['app.css']
+    //   delete assets['app.css']
+    // } else if (this.options.target === 'bd') {
+    //   // 百度
+    //   assets['app.css'] = assets['app.css']
+    // } else if (this.options.target === 'wx') {
+    //   // 微信
+    //   assets['app.wxss'] = assets['app.css']
+    //   delete assets['app.css']
+    // }
 
     this.helperPlugin.emitHook(compilation, callback)
   }
