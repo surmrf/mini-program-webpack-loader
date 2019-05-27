@@ -169,6 +169,13 @@ class MiniLoader {
         code = this.targetHelper.transformWxml(code)
       }
 
+      /**
+       * 对 wxs 文件做处理
+       */
+      if (this.fileMeta.isWxs && this.targetHelper.transformWxs) {
+        code = this.targetHelper.transformWxs(code)
+      }
+
       return Promise.all(promises).then(() => code)
     })
   }

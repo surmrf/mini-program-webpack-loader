@@ -22,4 +22,10 @@ module.exports = class BdLoaderHelper {
 
     return content
   }
+
+  transformWxs(content) {
+    content = content.replace(/module\.exports\s{0,}=/, 'export default')
+
+    return content;
+  }
 }
