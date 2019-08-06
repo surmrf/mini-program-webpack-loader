@@ -1,5 +1,17 @@
 var installedModules = {}
 
+/**
+ * core-js Promise 实现在 MutationObserver 存在下使用的
+ * document.createTextNode，导致在百度小程序下失败
+ */
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self
+  : Function('return this')();
+if (global) {
+	global.MutationObserver && (global.MutationObserver = null);
+	global.WebKitMutationObserver && (global.WebKitMutationObserver = null);
+}
+
 module.exports = function (entry, modules) {
   // The require function
 	function __webpack_require__(moduleId) {
@@ -13,7 +25,7 @@ module.exports = function (entry, modules) {
 			l: false,
 			exports: {}
 		};
-		// if (!modules[moduleId]) 
+		// if (!modules[moduleId])
 		// 	debugger
     // Execute the module function
 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
